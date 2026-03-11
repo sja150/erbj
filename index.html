@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrickArtisan | Ekskluzywne Projekty z Klocków</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0a0a0a',
+                            light: '#1a1a1a',
+                            gold: '#FFD700', // Klasyczny żółty LEGO przechodzący w złoto
+                            goldDark: '#D4AF37',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)' },
+                            '50%': { opacity: .8, boxShadow: '0 0 5px rgba(255, 215, 0, 0.1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        
+        /* Subtelny wzór wypustek klocków w tle */
+        .brick-pattern {
+            background-image: radial-gradient(rgba(255, 215, 0, 0.05) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+        
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Przycisk imitujący klocek LEGO z elementem Premium */
+        .btn-brick {
+            position: relative;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            border-bottom: 4px solid #B38F00;
+        }
+        .btn-brick:hover {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+            box-shadow: 0 10px 20px -10px rgba(255, 215, 0, 0.5);
+        }
+        .btn-brick:active {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
+        }
+        .btn-brick::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 15px;
+            width: 12px;
+            height: 6px;
+            background-color: #FFD700;
+            border-radius: 3px 3px 0 0;
+            box-shadow: 20px 0 0 #FFD700, 40px 0 0 #FFD700, 60px 0 0 #FFD700;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        /* Ukrywanie scrollbara dla lepszego efektu */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans overflow-x-hidden relative">
+
+    <!-- Tło ze wzorem -->
+    <div class="fixed inset-0 brick-pattern pointer-events-none z-[-1]"></div>
+
+    <!-- Nawigacja -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-t-0 border-l-0 border-r-0 border-b-brand-gold/20 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <div class="w-8 h-8 bg-brand-gold rounded flex items-center justify-center relative shadow-[0_0_10px_rgba(255,215,0,0.3)]">
+                        <div class="absolute -top-1.5 w-4 h-1.5 bg-brand-gold rounded-t-sm"></div>
+                        <span class="text-brand-dark font-black text-xl">B</span>
+                    </div>
+                    <span class="font-bold text-2xl tracking-wider">Brick<span class="text-brand-gold">Artisan</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#oferta" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Oferta</a>
+                    <a href="#dla-kogo" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Dla kogo?</a>
+                    <a href="#portfolio" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Realizacje</a>
+                    <a href="#kontakt" class="btn-brick bg-brand-gold text-brand-dark px-6 py-2 rounded-md font-bold text-sm uppercase tracking-wide">
+                        Wycena projektu
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-brand-gold hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-brand-gold/20">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                <a href="#oferta" class="block px-3 py-2 text-white hover:text-brand-gold font-medium w-full text-center">Oferta</a>
+                <a href="#dla-kogo" class="block px-3 py-2 text-white hover:text-brand-gold font-medium w-full text-center">Dla kogo?</a>
+                <a href="#portfolio" class="block px-3 py-2 text-white hover:text-brand-gold font-medium w-full text-center">Realizacje</a>
+                <a href="#kontakt" class="block mt-4 px-6 py-3 bg-brand-gold text-brand-dark font-bold rounded-md w-[80%] text-center uppercase">Wycena projektu</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-gold opacity-5 rounded-full blur-3xl -z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Tekst -->
+                <div class="text-center lg:text-left z-10">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border-brand-gold/30 text-brand-gold text-sm font-semibold tracking-wide mb-6">
+                        <i class="fas fa-gem"></i> Premium Custom Builds
+                    </div>
+                    <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+                        Zbudujemy Twoją <br />
+                        <span class="gold-text-gradient">Wyobraźnię</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg lg:text-xl mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Tworzymy ekskluzywne, spersonalizowane zestawy i modele z klocków. 
+                        Od unikalnych dzieł sztuki do Twojego salonu, po hurtowe, kreatywne prezenty biznesowe, 
+                        które wyróżnią Twoją firmę.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#kontakt" class="btn-brick bg-brand-gold text-brand-dark px-8 py-4 rounded-lg font-bold text-lg text-center uppercase tracking-wider flex items-center justify-center gap-2">
+                            <span>Zacznijmy projekt</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#portfolio" class="px-8 py-4 rounded-lg font-bold text-lg text-center glass-panel hover:bg-white/5 transition-all flex items-center justify-center gap-2 border border-gray-700">
+                            <span>Zobacz portfolio</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Grafika/Klocki (Abstrakcja) -->
+                <div class="relative h-[400px] lg:h-[600px] flex items-center justify-center z-0">
+                    <!-- Lewitujące klocki/pudełka reprezentujące budowle -->
+                    <div class="relative w-full h-full perspective-1000">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-brand-gold to-yellow-600 rounded-2xl shadow-[0_0_50px_rgba(255,215,0,0.3)] animate-float flex items-center justify-center transform rotate-12 border-t border-l border-white/40">
+                            <!-- Wypustki na głównym klocku -->
+                            <div class="absolute -top-4 left-6 w-12 h-6 bg-brand-gold rounded-t-lg shadow-inner"></div>
+                            <div class="absolute -top-4 right-6 w-12 h-6 bg-brand-gold rounded-t-lg shadow-inner"></div>
+                            <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-6 bg-brand-gold rounded-t-lg shadow-inner"></div>
+                            <i class="fas fa-crown text-brand-dark text-6xl opacity-50"></i>
+                        </div>
+                        
+                        <div class="absolute top-1/4 right-10 w-32 h-32 bg-gray-800 rounded-xl shadow-2xl animate-float-delayed flex items-center justify-center transform -rotate-12 border-t border-l border-gray-600 glass-panel">
+                            <i class="fas fa-building text-brand-gold text-3xl"></i>
+                        </div>
+
+                        <div class="absolute bottom-1/4 left-10 w-24 h-24 bg-brand-light rounded-xl shadow-2xl animate-float flex items-center justify-center transform rotate-45 border border-brand-gold/30">
+                            <i class="fas fa-cube text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sekcja Dla kogo (B2C & B2B) -->
+    <section id="dla-kogo" class="py-20 bg-brand-dark relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Dla kogo budujemy?</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <!-- B2C Karta -->
+                <div class="glass-panel p-10 rounded-3xl relative overflow-hidden group hover:border-brand-gold/50 transition-colors duration-500">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold opacity-10 rounded-bl-full group-hover:scale-110 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 bg-brand-light rounded-2xl flex items-center justify-center mb-8 border border-brand-gold/30">
+                        <i class="fas fa-home text-3xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Dla Domu i Pasjonatów</h3>
+                    <p class="text-gray-400 mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
+                        Szukasz czegoś więcej niż standardowy zestaw ze sklepu? Projektujemy i budujemy unikalne rzeźby, repliki domów, samochodów czy abstrakcyjne formy sztuki nowoczesnej, które staną się głównym punktem Twojego salonu. Radość z układania lub gotowy złożony model premium.
+                    </p>
+                    <ul class="space-y-3 text-gray-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Personalizowane rzeźby i mozaiki</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Pamiątki i prezenty rocznicowe</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Customowe instrukcje układania</li>
+                    </ul>
+                </div>
+
+                <!-- B2B Karta -->
+                <div class="glass-panel p-10 rounded-3xl relative overflow-hidden group hover:border-brand-gold/50 transition-colors duration-500">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 opacity-10 rounded-bl-full group-hover:scale-110 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 bg-brand-light rounded-2xl flex items-center justify-center mb-8 border border-brand-gold/30">
+                        <i class="fas fa-briefcase text-3xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Dla Biznesu i Agencji (B2B)</h3>
+                    <p class="text-gray-400 mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
+                        Zastąp nudne kubki i długopisy czymś, co naprawdę wywoła uśmiech u Twoich klientów i pracowników. Projektujemy firmowe maskotki, logotypy 3D i zestawy kreatywne w ilościach hurtowych, idealne na eventy, onboarding czy prezenty świąteczne.
+                    </p>
+                    <ul class="space-y-3 text-gray-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Zamówienia hurtowe (od 10 do 1000+ szt.)</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Dedykowane opakowania z Twoim logo</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-brand-gold"></i> Klockowe wizytówki i makiety firmowe</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sekcja Proces -->
+    <section id="oferta" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Jak to działa?</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Proces powstawania Twojego customowego zestawu to połączenie inżynieryjnej precyzji i dziecięcej radości tworzenia.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Krok 1 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 mx-auto bg-brand-light border-2 border-brand-gold rounded-full flex items-center justify-center text-2xl font-bold text-brand-gold mb-6 relative z-10 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        1
+                    </div>
+                    <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-brand-gold to-transparent -z-0 opacity-30"></div>
+                    <h4 class="text-xl font-bold mb-2">Wizja</h4>
+                    <p class="text-gray-400 text-sm">Opowiadasz nam o swoim pomyśle, potrzebach i budżecie.</p>
+                </div>
+                <!-- Krok 2 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 mx-auto bg-brand-light border-2 border-brand-gold rounded-full flex items-center justify-center text-2xl font-bold text-brand-gold mb-6 relative z-10 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        2
+                    </div>
+                    <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-brand-gold to-transparent -z-0 opacity-30"></div>
+                    <h4 class="text-xl font-bold mb-2">Projekt 3D</h4>
+                    <p class="text-gray-400 text-sm">Nasi projektanci tworzą cyfrowy model i przygotowują wycenę.</p>
+                </div>
+                <!-- Krok 3 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 mx-auto bg-brand-light border-2 border-brand-gold rounded-full flex items-center justify-center text-2xl font-bold text-brand-gold mb-6 relative z-10 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        3
+                    </div>
+                    <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-brand-gold to-transparent -z-0 opacity-30"></div>
+                    <h4 class="text-xl font-bold mb-2">Kompletowanie</h4>
+                    <p class="text-gray-400 text-sm">Sprowadzamy nowe, oryginalne klocki z całego świata.</p>
+                </div>
+                <!-- Krok 4 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 mx-auto bg-brand-gold rounded-full flex items-center justify-center text-2xl font-bold text-brand-dark mb-6 relative z-10 shadow-[0_0_20px_rgba(255,215,0,0.5)] animate-pulse-glow">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-2">Dostawa & Fun</h4>
+                    <p class="text-gray-400 text-sm">Otrzymujesz gotowy model lub zestaw z autorską instrukcją do samodzielnego złożenia!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner CTA -->
+    <section class="py-12 bg-brand-gold relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 20px 20px;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-brand-dark text-center md:text-left">
+                <h3 class="text-3xl font-extrabold mb-2">Gotowy na własny zestaw z klocków?</h3>
+                <p class="text-gray-800 font-medium">Niezależnie czy to jedna sztuka, czy tysiąc - zbudujemy to.</p>
+            </div>
+            <a href="#kontakt" class="bg-brand-dark text-brand-gold px-8 py-4 rounded-lg font-bold text-lg uppercase tracking-wider hover:bg-gray-800 transition-colors shadow-xl border border-gray-700">
+                Zapytaj o darmową wycenę
+            </a>
+        </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="kontakt" class="py-20 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel p-8 md:p-12 rounded-3xl border border-brand-gold/20 shadow-2xl relative overflow-hidden">
+                <!-- Dekoracyjne klocki w tle formularza -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-gold/5 rounded-2xl transform rotate-12"></div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brand-gold/5 rounded-2xl transform -rotate-12"></div>
+                
+                <div class="text-center mb-10 relative z-10">
+                    <h2 class="text-3xl font-bold mb-4">Opisz nam swój pomysł</h2>
+                    <p class="text-gray-400">Skontaktujemy się z Tobą w ciągu 24h z pomysłem na realizację.</p>
+                </div>
+
+                <form class="space-y-6 relative z-10" onsubmit="event.preventDefault(); showSuccessMessage();">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Imię i Nazwisko / Firma</label>
+                            <input type="text" required class="w-full bg-brand-dark/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors placeholder-gray-500" placeholder="Jan Kowalski">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                            <input type="email" required class="w-full bg-brand-dark/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors placeholder-gray-500" placeholder="jan@example.com">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Typ projektu</label>
+                        <select class="w-full bg-brand-dark/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors appearance-none">
+                            <option>Projekt indywidualny (Prezent / Ozdoba)</option>
+                            <option>Projekt firmowy B2B (Mniej niż 50 sztuk)</option>
+                            <option>Projekt firmowy B2B (Zamówienie hurtowe 50+ sztuk)</option>
+                            <option>Makieta / Model architektoniczny</option>
+                            <option>Inne</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Opisz swój pomysł (im więcej detali, tym lepiej)</label>
+                        <textarea required rows="4" class="w-full bg-brand-dark/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors placeholder-gray-500" placeholder="Chciałbym stworzyć replikę z klocków naszego flagowego produktu na targi..."></textarea>
+                    </div>
+
+                    <div id="success-message" class="hidden bg-green-900/40 border border-green-500 text-green-300 px-4 py-3 rounded-lg flex items-center gap-3">
+                        <i class="fas fa-check-circle"></i>
+                        Wiadomość wysłana! Niedługo się odezwiemy.
+                    </div>
+
+                    <button type="submit" class="btn-brick w-full bg-brand-gold text-brand-dark font-bold text-lg py-4 rounded-lg uppercase tracking-wider">
+                        Wyślij zapytanie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark border-t border-white/10 pt-16 pb-8 mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-6 h-6 bg-brand-gold rounded flex items-center justify-center relative">
+                            <span class="text-brand-dark font-black text-xs">B</span>
+                        </div>
+                        <span class="font-bold text-xl tracking-wider text-white">Brick<span class="text-brand-gold">Artisan</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Łączymy precyzję z nostalgią. Tworzymy ekskluzywne, w 100% zindywidualizowane projekty z prawdziwych klocków dla najbardziej wymagających klientów i nowoczesnych firm.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-6">Szybkie linki</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#oferta" class="hover:text-brand-gold transition-colors">Oferta i Cennik</a></li>
+                        <li><a href="#dla-kogo" class="hover:text-brand-gold transition-colors">Dla B2B</a></li>
+                        <li><a href="#portfolio" class="hover:text-brand-gold transition-colors">Galeria Realizacji</a></li>
+                        <li><a href="#" class="hover:text-brand-gold transition-colors">Regulamin i FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6">Kontakt</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-center gap-3"><i class="fas fa-envelope text-brand-gold"></i> kontakt@brickartisan.pl</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-phone text-brand-gold"></i> +48 123 456 789</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-brand-gold"></i> Warszawa, Polska</li>
+                    </ul>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-gray-400 hover:text-brand-gold hover:bg-gray-800 transition-all border border-gray-700">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-gray-400 hover:text-brand-gold hover:bg-gray-800 transition-all border border-gray-700">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-gray-400 hover:text-brand-gold hover:bg-gray-800 transition-all border border-gray-700">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2026 BrickArtisan. Wszelkie prawa zastrzeżone.</p>
+                <p class="mt-2 md:mt-0">Nie jesteśmy powiązani z Grupą LEGO®. LEGO to znak towarowy, który nie sponsoruje tego projektu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Logika menu mobilnego
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Ukryj menu mobilne po kliknięciu w link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Symulacja wysyłania formularza
+        function showSuccessMessage() {
+            const msg = document.getElementById('success-message');
+            msg.classList.remove('hidden');
+            setTimeout(() => {
+                msg.classList.add('hidden');
+            }, 5000);
+            
+            // Czyszczenie formularza
+            document.querySelector('form').reset();
+        }
+
+        // Tło nawigacji przy scrollowaniu
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-brand-dark/95', 'shadow-lg');
+                navbar.classList.remove('border-b-brand-gold/20');
+                navbar.style.borderBottom = '1px solid rgba(255, 215, 0, 0.1)';
+            } else {
+                navbar.classList.remove('bg-brand-dark/95', 'shadow-lg');
+                navbar.classList.add('border-b-brand-gold/20');
+                navbar.style.borderBottom = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
